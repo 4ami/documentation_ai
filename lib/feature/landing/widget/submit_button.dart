@@ -1,4 +1,5 @@
 import 'package:documentation_ai/feature/landing/bloc/generate_bloc.dart';
+import 'package:documentation_ai/feature/landing/bloc/events.dart'; // Add this to handle events
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,15 +32,14 @@ class SubmitButton extends StatelessWidget {
     );
   }
 
+  // Enable the button only if files and role are selected
   void Function()? _isEnable(BuildContext context) {
     final watcher = context.watch<GenerateBLOC>().state;
     if (watcher.files.isEmpty) return null;
     if (watcher.role.isEmpty) return null;
-    return _kOnPressed;
-  }
-
-  void Function() get _kOnPressed {
-    return () {};
+    return () => context
+        .read<GenerateBLOC>()
+        .add(SubmitEvent()); // Trigger the SubmitEvent
   }
 
   MaterialStatePropertyAll<OutlinedBorder?> get _kBS {
