@@ -30,7 +30,8 @@
 
 2. Install the necessary dependencies:
    ```bash
-   pip install -r requirements.txt
+   flutter clean
+   flutter pub get
    ```
 
 3. Add your OpenAI API key:
@@ -41,7 +42,7 @@
 
 4. Run the application:
    ```bash
-   python app.py
+   flutter run
    ```
 
 ## Usage
