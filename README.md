@@ -1,5 +1,3 @@
-Here's a draft for the README file for your project:
-
 ---
 
 # Documentation AI
@@ -77,5 +75,3 @@ We welcome contributions from the community! Please see [CONTRIBUTING.md](CONTRI
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
-
-Let me know if you want any changes or additions!
