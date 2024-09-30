@@ -1,6 +1,5 @@
 import 'package:documentation_ai/feature/landing/widget/submit_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import '../widget/app_features.dart';
 import '../widget/files_role_box.dart';
 import '../widget/footer.dart';
