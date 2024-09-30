@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'dart:convert';
 import 'package:documentation_ai/conf/shared/constants/image_path.dart';
 import 'package:documentation_ai/conf/shared/widgets/logger.dart';
 import 'package:documentation_ai/feature/landing/bloc/events.dart';
@@ -34,10 +33,11 @@ class _FileUploaderState extends State<FileUploader> {
         if (picker == null) return;
         if (picker.files.isEmpty) return;
 
-        Map<String, Uint8List> files = {};
+        Map<String, String> files = {};
+
         for (PlatformFile file in picker.files) {
           if (file.bytes == null) continue;
-          files[file.name] = file.bytes!;
+          files[file.name] = utf8.decode(file.bytes!);
         }
         _upload(files: files);
       },
@@ -68,7 +68,7 @@ class _FileUploaderState extends State<FileUploader> {
     );
   }
 
-  void _upload({required Map<String, Uint8List> files}) {
+  void _upload({required Map<String, String> files}) {
     Logger.instance.info(
       'Adding [UploadFiles] event.',
       location: 'FileUploader',
