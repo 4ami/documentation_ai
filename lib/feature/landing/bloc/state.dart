@@ -1,10 +1,9 @@
-import 'dart:typed_data';
 import 'package:documentation_ai/feature/landing/bloc/events.dart';
 
 final class GenerateState {
   final String role;
   final GenerateEvent event;
-  final Map<String, Uint8List> files;
+  final Map<String, String> files;
 
   const GenerateState({
     this.role = '',
@@ -15,7 +14,7 @@ final class GenerateState {
   GenerateState copyWith({
     String? role,
     GenerateEvent? event,
-    Map<String, Uint8List>? files,
+    Map<String, String>? files,
   }) {
     return GenerateState(
       role: role ?? this.role,

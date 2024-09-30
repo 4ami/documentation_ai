@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 sealed class GenerateEvent {
   const GenerateEvent();
 
@@ -32,7 +30,7 @@ final class UploadFilesFailed extends GenerateEvent {
 }
 
 final class UploadFiles extends GenerateEvent {
-  final Map<String, Uint8List> content;
+  final Map<String, String> content;
   const UploadFiles({required this.content});
 
   @override
