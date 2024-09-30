@@ -1,11 +1,9 @@
 import 'dart:typed_data';
-
 import 'package:documentation_ai/conf/shared/constants/image_path.dart';
 import 'package:documentation_ai/conf/shared/widgets/logger.dart';
 import 'package:documentation_ai/feature/landing/bloc/events.dart';
 import 'package:documentation_ai/feature/landing/bloc/generate_bloc.dart';
-import 'package:file_picker/_internal/file_picker_web.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,25 +19,44 @@ class _FileUploaderState extends State<FileUploader> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        FilePickerResult? picker = await FilePickerWeb.platform.pickFiles(
-          onFileLoading: (p0) {
-            Logger.instance.info(p0.name, location: 'Upload Container');
-            context.read<GenerateBLOC>().add(const SelectFilesToUpload());
-          },
-          allowMultiple: true,
-          allowedExtensions: ['py', 'js', 'dart', 'cpp', 'cs', 'ts', 'tsx'],
-          type: FileType.custom,
-        );
+        try {
+          // Use FilePicker for picking files across platforms (web, mobile, desktop)
+          FilePickerResult? picker = await FilePicker.platform.pickFiles(
+            allowMultiple: true, // Allow multiple file uploads
+            allowedExtensions: [
+              'py',
+              'js',
+              'dart',
+              'cpp',
+              'cs',
+              'ts',
+              'tsx'
+            ], // Specific file types
+            type: FileType.custom,
+          );
 
-        if (picker == null) return;
-        if (picker.files.isEmpty) return;
+          if (picker == null || picker.files.isEmpty)
+            return; // If no files are picked, return
 
-        Map<String, Uint8List> files = {};
-        for (PlatformFile file in picker.files) {
-          if (file.bytes == null) continue;
-          files[file.name] = file.bytes!;
+          // Log the file-picking process
+          context.read<GenerateBLOC>().add(const SelectFilesToUpload());
+          Logger.instance.info('Files selected: ${picker.files.length}',
+              location: 'File Uploader');
+
+          // Preparing files to be uploaded
+          Map<String, Uint8List> files = {};
+          for (PlatformFile file in picker.files) {
+            if (file.bytes == null) continue; // Skip if no bytes
+            files[file.name] = file.bytes!; // Add file content
+          }
+
+          // Dispatch the event to upload files to the BLoC
+          context.read<GenerateBLOC>().add(UploadFiles(content: files));
+        } catch (e) {
+          // Log any errors that happen during the file-picking process
+          Logger.instance.error('Error while picking files: $e',
+              location: 'File Uploader');
         }
-        _upload(files: files);
       },
       child: Container(
         width: MediaQuery.sizeOf(context).width,
@@ -53,26 +70,18 @@ class _FileUploaderState extends State<FileUploader> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(ImagePath.upload),
+            Image.asset(ImagePath.upload), // Display upload image
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: Text(
-                textAlign: TextAlign.center,
                 'Select Feature Code Files',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-            )
+            ),
           ],
         ),
       ),
     );
-  }
-
-  void _upload({required Map<String, Uint8List> files}) {
-    Logger.instance.info(
-      'Adding [UploadFiles] event.',
-      location: 'FileUploader',
-    );
-    context.read<GenerateBLOC>().add(UploadFiles(content: files));
   }
 }

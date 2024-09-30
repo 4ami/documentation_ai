@@ -77,3 +77,12 @@ final class PendingOperation extends GenerateEvent {
   @override
   String get description => 'Waiting event due processing or async request';
 }
+
+class FileUploaded extends GenerateEvent {
+  final Map<String, Uint8List> content;
+
+  FileUploaded({required this.content});
+}
+
+
+class SubmitEvent extends GenerateEvent {}
